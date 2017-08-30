@@ -95,10 +95,15 @@ contract PePaDe {
 
   // fallback function; also check if we have now enough funds to start the contract
   function () payable {
-    if (state == State.Agreed && this.balance > fee) {
+    if (state == State.Agreed && this.balance >= fee) {
       state = State.Funded;
       ContractFunded();
     }
+  }
+
+  // utility function to check balance
+  function getBalance() view public returns(uint) {
+    return this.balance;
   }
 
   // should we ask/check for deposit here?
