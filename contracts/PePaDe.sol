@@ -106,6 +106,13 @@ contract Shipment {
     state = State.Proposed;
   }
 
+  // function for the frontend to retrieve data to print on screen
+  function getData() view public returns(address _recipient, uint _weight,
+      string _origin, string _dest, int _maxTemp, int _minTemp, uint _cTime,
+      uint _eTime) {
+    return(recipient, weightInKg, originAddress, destAddress, maxTemp, minTemp, creationTime, expirationTime);
+  }
+
   // fallback function; also check if we have now enough funds to start the contract
   function () payable {
     if (state == State.Agreed && this.balance >= fee) {
