@@ -78,7 +78,7 @@ contract PePaDe {
   }
 
   function PePaDe(address _recipient, string _originAddress,
-           string _destAddress, int _maxTemp, int _minTemp, uint _fee,
+           string _destAddress, int _maxTemp, int _minTemp,
            uint _weightInKg, uint _expirationTime) payable {
     sender = msg.sender;
     recipient = _recipient;
@@ -118,7 +118,7 @@ contract PePaDe {
   function selectDeliverer(uint index) onlySender public {
     require(state == State.WithOffer);
     require(index < candidateLen);
-    DelivererCandidate selected = candidates[index];
+    DelivererCandidate memory selected = candidates[index];
     deliverer = selected.id;
     fee = selected.proposedFee;
     // this could be specified separately by another call to use a different address, right now it is useless
