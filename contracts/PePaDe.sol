@@ -1,6 +1,19 @@
 pragma solidity ^0.4.4;
 
 contract PePaDe {
+  event NewShipment(address shipment);
+
+  function createShipment(address _recipient, string _originAddress,
+          string _destAddress, int _maxTemp, int _minTemp,
+          uint _weightInKg, uint _expirationTime) public  {
+    Shipment shipment = new Shipment(msg.sender, _recipient,
+           _originAddress, _destAddress, _maxTemp, _minTemp,
+           _weightInKg, _expirationTime);
+    NewShipment(shipment);
+  }
+}
+
+contract Shipment {
   enum State {
     Proposed, WithOffer, Agreed, Funded, Shipping, Delivered, Paid, Expired, Exception
   }
@@ -31,7 +44,7 @@ contract PePaDe {
   bool delivererConfirmed;
 
   event NewCandidate(uint index, address deliverCandidate, uint proposedFee, uint offerExpiration);
-  event DelivererSelected(address selectedDeliverer, uint fee);
+  event DelivererSelected(address selectedDeliverer, uint finalFee);
   event ContractFunded();
   event ParcelShipped();
   event ParcelDelivered();
@@ -77,10 +90,10 @@ contract PePaDe {
     _;
   }
 
-  function PePaDe(address _recipient, string _originAddress,
+  function Shipment(address _sender, address _recipient, string _originAddress,
            string _destAddress, int _maxTemp, int _minTemp,
            uint _weightInKg, uint _expirationTime) payable {
-    sender = msg.sender;
+    sender = _sender;
     recipient = _recipient;
     weightInKg = _weightInKg;
     originAddress = _originAddress;
@@ -180,5 +193,4 @@ contract PePaDe {
     ContractDestroyed();
     selfdestruct(sender);
   }
-
 }
