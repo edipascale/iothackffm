@@ -2,14 +2,28 @@ pragma solidity ^0.4.4;
 
 contract PePaDe {
   event NewShipment(address shipment);
+  address public owner;
+
+  function PePaDe() {
+    owner = msg.sender;
+  }
 
   function createShipment(address _recipient, string _originAddress,
           string _destAddress, int _maxTemp, int _minTemp,
-          uint _weightInKg, uint _expirationTime) public  {
+          uint _weightInKg, uint _expirationTime) public
+          returns(address contractAddress) {
     Shipment shipment = new Shipment(msg.sender, _recipient,
            _originAddress, _destAddress, _maxTemp, _minTemp,
            _weightInKg, _expirationTime);
     NewShipment(shipment);
+    return shipment;
+  }
+
+  function () payable public {}
+
+  function selfDestruct() {
+    require(msg.sender == owner);
+    selfdestruct(owner);
   }
 }
 
@@ -107,7 +121,7 @@ contract Shipment {
   }
 
   // function for the frontend to retrieve data to print on screen
-  function getData() view public returns(address _recipient, uint _weight,
+  function getData() constant public returns(address _recipient, uint _weight,
       string _origin, string _dest, int _maxTemp, int _minTemp, uint _cTime,
       uint _eTime) {
     return(recipient, weightInKg, originAddress, destAddress, maxTemp, minTemp, creationTime, expirationTime);
@@ -122,7 +136,7 @@ contract Shipment {
   }
 
   // utility function to check balance
-  function getBalance() view public returns(uint) {
+  function getBalance() constant public returns(uint) {
     return this.balance;
   }
 
